@@ -1,0 +1,92 @@
+openapi: 3.0.4
+info:
+  title: Subscription Notification Service
+  version: 0.0.1
+  description: Minimal draft for a notification microservice (subscription expiry reminders). Notifications endpoints return 501 NOT IMPLEMENTED for now.
+
+servers:
+  - url: https://api.example.com/notify
+    description: production
+  - url: https://staging-api.example.com/notify
+    description: staging
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+
+  /notifications:
+    get:
+      summary: List notifications
+      responses:
+        "501":
+          description: NOT IMPLEMENTED
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error501"
+    post:
+      summary: Create a notification (queue/send)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNotificationRequest"
+      responses:
+        "501":
+          description: NOT IMPLEMENTED
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error501"
+    put:
+      summary: Replace notifications collection (placeholder)
+      responses:
+        "501":
+          description: NOT IMPLEMENTED
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error501"
+    delete:
+      summary: Delete notifications collection (placeholder)
+      responses:
+        "501":
+          description: NOT IMPLEMENTED
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error501"
+
+components:
+  schemas:
+    CreateNotificationRequest:
+      type: object
+      description: Minimal placeholder for create notification
+      properties:
+        userId: { type: string, example: u_123 }
+        channel: { type: string, enum: [email, sms, push], example: email }
+        to: { type: string, example: alice@example.com }
+        templateCode: { type: string, example: SUBSCRIPTION_EXPIRY_7D }
+        variables:
+          type: object
+          additionalProperties: true
+          example: { name: Alice, expiry_date: "2025-10-31" }
+        idempotencyKey: { type: string, example: subexp-7d-u_123 }
+      required: [channel, to]
+    Error501:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: NOT IMPLEMENTED
