@@ -5,6 +5,8 @@ info:
   description: Minimal draft for a notification microservice (subscription expiry reminders). Notifications endpoints return 501 NOT IMPLEMENTED for now.
 
 servers:
+  - url: http://127.0.0.1:8000
+    description: local development
   - url: https://api.example.com/notify
     description: production
   - url: https://staging-api.example.com/notify
