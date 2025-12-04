@@ -1,5 +1,6 @@
 import logging
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.utils.settings import get_settings
 from app.utils.db import get_session_factory, create_all, get_engine
 from app.services.notification_service import NotificationService
@@ -13,6 +14,15 @@ logger = logging.getLogger("whatsub-notification")
 settings = get_settings()
 
 app = FastAPI(title="Subscription Notification Service", version="0.0.1")
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, specify exact origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.add_middleware(RequestLoggingMiddleware)
 
