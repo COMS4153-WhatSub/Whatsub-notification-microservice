@@ -1,0 +1,17 @@
+[Unit]
+Description=Whatsub Notification Microservice
+After=network.target
+
+[Service]
+Type=simple
+User=azhu2019cc
+WorkingDirectory=/home/azhu2019cc/Whatsub-notification-microservice
+Environment="PATH=/home/azhu2019cc/miniconda3/envs/cloud_computing/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/home/azhu2019cc/miniconda3/envs/cloud_computing/bin/uvicorn app.main:app --host 0.0.0.0 --port 8082
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
