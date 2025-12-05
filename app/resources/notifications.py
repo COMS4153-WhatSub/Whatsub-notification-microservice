@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Request, Query
+from fastapi import APIRouter, HTTPException, status, Request, Query, Path
 from fastapi.responses import StreamingResponse
 from app.models.notification import (
     NotificationRequest, 
@@ -115,6 +115,30 @@ def mark_notification_read(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to mark notification as read: {str(e)}"
+        )
+
+@router.delete("/notifications/subscription/{subscription_id}")
+def delete_notifications_by_subscription(
+    subscription_id: int = Path(..., description="Subscription ID to delete notifications for"),
+    request: Request = None
+):
+    """
+    Delete all notifications associated with a subscription.
+    This endpoint is called when a subscription is deleted to maintain data consistency.
+    """
+    service = get_notification_service(request)
+    
+    try:
+        deleted_count = service.delete_notifications_by_subscription_id(subscription_id)
+        return {
+            "message": f"Deleted {deleted_count} notifications for subscription {subscription_id}",
+            "subscription_id": subscription_id,
+            "deleted_count": deleted_count
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete notifications for subscription {subscription_id}: {str(e)}"
         )
 
 @router.get("/notifications/stream")

@@ -160,3 +160,26 @@ class NotificationService:
             self.logger.error(f"Failed to get unread count for user {user_id}: {str(e)}")
             return 0
 
+    def delete_notifications_by_subscription_id(self, subscription_id: int) -> int:
+        """
+        Delete all notifications associated with a subscription.
+        Returns the number of notifications deleted.
+        """
+        try:
+            with self.session_factory() as session:
+                deleted_count = session.query(NotificationORM).filter(
+                    NotificationORM.subscription_id == subscription_id
+                ).delete(synchronize_session=False)
+                session.commit()
+                self.logger.info(
+                    f"Deleted {deleted_count} notifications for subscription {subscription_id}"
+                )
+                return deleted_count
+        except Exception as e:
+            self.logger.error(
+                f"Failed to delete notifications for subscription {subscription_id}: {str(e)}"
+            )
+            raise RuntimeError(
+                f"Failed to delete notifications for subscription {subscription_id}: {str(e)}"
+            ) from e
+
